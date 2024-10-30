@@ -27,6 +27,7 @@
 ## 前端项目
 [github地址](https://github.com/zhouhongfa/datax-vue-admin.git)
 ## how to run
+数据库脚本还是要执行的，如果使用web端的话，脚本：/Applications/myMac/zhongjian/code3/datax/DataX-SpringBoot-master/datax-web/db/datax_web.sql
 ### 1. 在父工程目录下使用maven打包，直接跳过此步，已经将插件生成好，放在resource目录下了，直接启动项目即可
 ```
  mvn -U clean package assembly:assembly -Dmaven.test.skip=true 
