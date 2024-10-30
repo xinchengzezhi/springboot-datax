@@ -1,11 +1,11 @@
 server:
-  port: 8066
+  port: 8080
 spring:
   #数据源
   datasource:
-    username: root
-    password: xinyi2513
-    url: jdbc:mysql://10.24.5.21:3306/datax_web?serverTimezone=Asia/Shanghai&useLegacyDatetimeCode=false&useSSL=false&nullNamePatternMatchesAll=true&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://olrating-rw-qa.yzw.cn:6302/jc_ppls?serverTimezone=Asia/Shanghai&characterEncoding=utf8&allowMultiQueries=true
+    username: app_owner
+    password: YZ.zk.owner@2016
     driver-class-name: com.mysql.jdbc.Driver
 
 
@@ -38,4 +38,4 @@ mybatis-plus:
 
 app:
   #  数据抽取日志文件保存路径
-  etlLogDir: /xcloud/gpDataTest/data/applogs/datax-web/
+  etlLogDir: /tmp/logs/datax-web

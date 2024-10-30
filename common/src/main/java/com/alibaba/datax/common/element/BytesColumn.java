@@ -18,7 +18,7 @@ public class BytesColumn extends Column {
 	}
 
 	public BytesColumn(byte[] bytes) {
-		super(ArrayUtils.clone(bytes), Column.Type.BYTES, null == bytes ? 0
+		super(ArrayUtils.clone(bytes), Type.BYTES, null == bytes ? 0
 				: bytes.length);
 	}
 
@@ -72,6 +72,12 @@ public class BytesColumn extends Column {
 
 	@Override
 	public Date asDate() {
+		throw DataXException.asDataXException(
+				CommonErrorCode.CONVERT_NOT_SUPPORT, "Bytes类型不能转为Date .");
+	}
+	
+	@Override
+	public Date asDate(String dateFormat) {
 		throw DataXException.asDataXException(
 				CommonErrorCode.CONVERT_NOT_SUPPORT, "Bytes类型不能转为Date .");
 	}

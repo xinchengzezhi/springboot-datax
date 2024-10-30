@@ -53,7 +53,7 @@ public class DoubleColumn extends Column {
 	}
 
 	private DoubleColumn(final String data, int byteSize) {
-		super(data, Column.Type.DOUBLE, byteSize);
+		super(data, Type.DOUBLE, byteSize);
 	}
 
 	@Override
@@ -129,6 +129,12 @@ public class DoubleColumn extends Column {
 
 	@Override
 	public Date asDate() {
+		throw DataXException.asDataXException(
+				CommonErrorCode.CONVERT_NOT_SUPPORT, "Double类型无法转为Date类型 .");
+	}
+	
+	@Override
+	public Date asDate(String dateFormat) {
 		throw DataXException.asDataXException(
 				CommonErrorCode.CONVERT_NOT_SUPPORT, "Double类型无法转为Date类型 .");
 	}

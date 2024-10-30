@@ -1,6 +1,5 @@
 package com.alibaba.datax.common.statistics;
 
-import com.alibaba.datax.common.log.EtlJobLogger;
 import com.alibaba.datax.common.statistics.PerfRecord.PHASE;
 import com.alibaba.datax.common.util.Configuration;
 import com.alibaba.datax.common.util.HostUtils;
@@ -10,7 +9,14 @@ import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +38,6 @@ public class PerfTrace {
     private int taskGroupId;
     private int channelNumber;
 
-    private int priority;
     private int batchSize = 500;
     private volatile boolean perfReportEnable = true;
 
@@ -55,12 +60,12 @@ public class PerfTrace {
      * @param taskGroupId
      * @return
      */
-    public static PerfTrace getInstance(boolean isJob, long jobId, int taskGroupId, int priority, boolean enable) {
+    public static PerfTrace getInstance(boolean isJob, long jobId, int taskGroupId, boolean enable) {
 
         if (instance == null) {
             synchronized (lock) {
                 if (instance == null) {
-                    instance = new PerfTrace(isJob, jobId, taskGroupId, priority, enable);
+                    instance = new PerfTrace(isJob, jobId, taskGroupId, enable);
                 }
             }
         }
@@ -75,26 +80,23 @@ public class PerfTrace {
     public static PerfTrace getInstance() {
         if (instance == null) {
             LOG.error("PerfTrace instance not be init! must have some error! ");
-            EtlJobLogger.log("PerfTrace instance not be init! must have some error! ");
             synchronized (lock) {
                 if (instance == null) {
-                    instance = new PerfTrace(false, -1111, -1111, 0, false);
+                    instance = new PerfTrace(false, -1111, -1111, false);
                 }
             }
         }
         return instance;
     }
 
-    private PerfTrace(boolean isJob, long jobId, int taskGroupId, int priority, boolean enable) {
+    private PerfTrace(boolean isJob, long jobId, int taskGroupId, boolean enable) {
         try {
             this.perfTraceId = isJob ? "job_" + jobId : String.format("taskGroup_%s_%s", jobId, taskGroupId);
             this.enable = enable;
             this.isJob = isJob;
             this.taskGroupId = taskGroupId;
             this.instId = jobId;
-            this.priority = priority;
-            LOG.info(String.format("PerfTrace traceId=%s, isEnable=%s, priority=%s", this.perfTraceId, this.enable, this.priority));
-            EtlJobLogger.log(String.format("PerfTrace traceId=%s, isEnable=%s, priority=%s", this.perfTraceId, this.enable, this.priority));
+            LOG.info(String.format("PerfTrace traceId=%s, isEnable=%s", this.perfTraceId, this.enable));
 
         } catch (Exception e) {
             // do nothing
@@ -401,7 +403,6 @@ public class PerfTrace {
             jdo.setWindowEnd(this.windowEnd);
             jdo.setJobStartTime(jobStartTime);
             jdo.setJobRunTimeMs(System.currentTimeMillis() - jobStartTime.getTime());
-            jdo.setJobPriority(this.priority);
             jdo.setChannelNum(this.channelNumber);
             jdo.setCluster(this.cluster);
             jdo.setJobDomain(this.jobDomain);
@@ -612,7 +613,6 @@ public class PerfTrace {
         private Date jobStartTime;
         private Date jobEndTime;
         private Long jobRunTimeMs;
-        private Integer jobPriority;
         private Integer channelNum;
         private String cluster;
         private String jobDomain;
@@ -681,10 +681,6 @@ public class PerfTrace {
 
         public Long getJobRunTimeMs() {
             return jobRunTimeMs;
-        }
-
-        public Integer getJobPriority() {
-            return jobPriority;
         }
 
         public Integer getChannelNum() {
@@ -817,10 +813,6 @@ public class PerfTrace {
 
         public void setJobRunTimeMs(Long jobRunTimeMs) {
             this.jobRunTimeMs = jobRunTimeMs;
-        }
-
-        public void setJobPriority(Integer jobPriority) {
-            this.jobPriority = jobPriority;
         }
 
         public void setChannelNum(Integer channelNum) {

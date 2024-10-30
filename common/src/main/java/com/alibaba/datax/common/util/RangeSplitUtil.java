@@ -4,7 +4,11 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 提供通用的根据数字范围、字符串范围等进行切分的通用功能.
@@ -204,6 +208,29 @@ public final class RangeSplitUtil {
             }
         }
         return true;
+    }
+
+
+    /**
+     * List拆分工具函数，主要用于reader插件的split拆分逻辑
+     * */
+    public static <T> List<List<T>> doListSplit(List<T> objects, int adviceNumber) {
+        List<List<T>> splitLists = new ArrayList<List<T>>();
+        if (null == objects) {
+            return splitLists;
+        }
+        long[] splitPoint = RangeSplitUtil.doLongSplit(0, objects.size(), adviceNumber);
+        for (int startIndex = 0; startIndex < splitPoint.length - 1; startIndex++) {
+            List<T> objectsForTask = new ArrayList<T>();
+            int endIndex = startIndex + 1;
+            for (long i = splitPoint[startIndex]; i < splitPoint[endIndex]; i++) {
+                objectsForTask.add(objects.get((int) i));
+            }
+            if (!objectsForTask.isEmpty()) {
+                splitLists.add(objectsForTask);
+            }
+        }
+        return splitLists;
     }
 
 }

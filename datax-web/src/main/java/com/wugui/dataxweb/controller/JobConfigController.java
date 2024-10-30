@@ -72,7 +72,8 @@ public class JobConfigController extends ApiController {
         QueryWrapper<JobConfig> queryWrapper = new QueryWrapper<>();
 
         //排序 操作
-        pageHelperParams.forEach((k, v) -> {
+        pageHelperParams.forEach((k, v)
+                -> {
             switch (k) {
                 case "ascs":
                     queryWrapper.orderByAsc(StrUtil.toUnderlineCase(StrUtil.toString(v)));

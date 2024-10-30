@@ -5,6 +5,7 @@ import com.alibaba.datax.common.exception.DataXException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Time;
 import java.util.Date;
 
 /**
@@ -12,25 +13,61 @@ import java.util.Date;
  */
 public class DateColumn extends Column {
 
-	private DateType subType = DateType.DATETIME;
+    private DateType subType = DateType.DATETIME;
 
-	public static enum DateType {
-		DATE, TIME, DATETIME
-	}
+    private int nanos = 0;
 
-	/**
-	 * 构建值为null的DateColumn，使用Date子类型为DATETIME
-	 * */
-	public DateColumn() {
-		this((Long)null);
-	}
+    private int precision = -1;
+
+    public static enum DateType {
+        DATE, TIME, DATETIME
+    }
+
+    /**
+     * 构建值为time(java.sql.Time)的DateColumn，使用Date子类型为TIME，只有时间，没有日期
+     */
+    public DateColumn(Time time, int nanos, int jdbcPrecision) {
+        this(time);
+        if (time != null) {
+            setNanos(nanos);
+        }
+        if (jdbcPrecision == 10) {
+            setPrecision(0);
+        }
+        if (jdbcPrecision >= 12 && jdbcPrecision <= 17) {
+            setPrecision(jdbcPrecision - 11);
+        }
+    }
+
+    public long getNanos() {
+        return nanos;
+    }
+
+    public void setNanos(int nanos) {
+        this.nanos = nanos;
+    }
+
+    public int getPrecision() {
+        return precision;
+    }
+
+    public void setPrecision(int precision) {
+        this.precision = precision;
+    }
+
+    /**
+     * 构建值为null的DateColumn，使用Date子类型为DATETIME
+     */
+    public DateColumn() {
+        this((Long) null);
+    }
 
 	/**
 	 * 构建值为stamp(Unix时间戳)的DateColumn，使用Date子类型为DATETIME
 	 * 实际存储有date改为long的ms，节省存储
 	 * */
 	public DateColumn(final Long stamp) {
-		super(stamp, Column.Type.DATE, (null == stamp ? 0 : 8));
+		super(stamp, Type.DATE, (null == stamp ? 0 : 8));
 	}
 
 	/**
@@ -51,7 +88,7 @@ public class DateColumn extends Column {
 	/**
 	 * 构建值为time(java.sql.Time)的DateColumn，使用Date子类型为TIME，只有时间，没有日期
 	 * */
-	public DateColumn(final java.sql.Time time) {
+	public DateColumn(final Time time) {
 		this(time == null ? null : time.getTime());
 		this.setSubType(DateType.TIME);
 	}
@@ -88,6 +125,11 @@ public class DateColumn extends Column {
 		}
 
 		return new Date((Long)this.getRawData());
+	}
+	
+	@Override
+	public Date asDate(String dateFormat) {
+		return asDate();
 	}
 
 	@Override

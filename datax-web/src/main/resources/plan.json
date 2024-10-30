@@ -1,0 +1,106 @@
+{
+  "job": {
+    "setting": {
+      "speed": {
+        "channel": 5
+      }
+    },
+    "content": [
+      {
+        "reader": {
+          "name": "mysqlreader",
+          "parameter": {
+            "username": "app_owner",
+            "password": "YZ.zk.owner@2016",
+            "column": [
+              "name",
+              "tenant_id",
+              "code"
+            ],
+            "where": "(CAST(substring(code, 5, 19) AS UNSIGNED) ^((CAST(substring(code, 5, 19) AS UNSIGNED) >> 2))) & 2 = 0",
+            "connection": [
+              {
+                "table": [
+                  "test_user_0"
+                ],
+                "jdbcUrl": [
+                  "jdbc:mysql://olrating-rw-qa.yzw.cn:6302/jc_ppls"
+                ]
+              }
+            ]
+          }
+        },
+        "writer": {
+          "name": "mysqlwriter",
+          "parameter": {
+            "username": "app_owner",
+            "password": "YZ.zk.owner@2016",
+            "column": [
+              "name",
+              "tenant_id",
+              "code"
+            ],
+            "preSql": [],
+            "postSql": [],
+            "connection": [
+              {
+                "table": [
+                  "test_user_1"
+                ],
+                "jdbcUrl": "jdbc:mysql://olrating-rw-qa.yzw.cn:6302/jc_ppls"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "reader": {
+          "name": "mysqlreader",
+          "parameter": {
+            "username": "app_owner",
+            "password": "YZ.zk.owner@2016",
+            "column": [
+              "name",
+              "tenant_id",
+              "code"
+            ],
+            "where": "(CAST(substring(code, 5, 19) AS UNSIGNED) ^((CAST(substring(code, 5, 19) AS UNSIGNED) >> 2))) & 2 = 1",
+            "connection": [
+              {
+                "table": [
+                  "test_user_0"
+                ],
+                "jdbcUrl": [
+                  "jdbc:mysql://olrating-rw-qa.yzw.cn:6302/jc_ppls"
+                ]
+              }
+            ]
+          }
+        },
+        "writer": {
+          "name": "mysqlwriter",
+          "parameter": {
+            "username": "app_owner",
+            "password": "YZ.zk.owner@2016",
+            "column": [
+              "name",
+              "tenant_id",
+              "code"
+            ],
+            "preSql": [],
+            "postSql": [
+            ],
+            "connection": [
+              {
+                "table": [
+                  "test_user_1"
+                ],
+                "jdbcUrl": "jdbc:mysql://olrating-rw-qa.yzw.cn:6302/jc_ppls"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

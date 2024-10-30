@@ -1,11 +1,11 @@
 package com.alibaba.datax.common.element;
 
+import com.alibaba.datax.common.exception.CommonErrorCode;
+import com.alibaba.datax.common.exception.DataXException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-
-import com.alibaba.datax.common.exception.CommonErrorCode;
-import com.alibaba.datax.common.exception.DataXException;
 
 /**
  * Created by jingxing on 14-8-24.
@@ -18,7 +18,7 @@ public class StringColumn extends Column {
 	}
 
 	public StringColumn(final String rawData) {
-		super(rawData, Column.Type.STRING, (null == rawData ? 0 : rawData
+		super(rawData, Type.STRING, (null == rawData ? 0 : rawData
 				.length()));
 	}
 
@@ -146,6 +146,16 @@ public class StringColumn extends Column {
 		} catch (Exception e) {
 			throw DataXException.asDataXException(
 					CommonErrorCode.CONVERT_NOT_SUPPORT,
+					String.format("String[\"%s\"]不能转为Date .", this.asString()));
+		}
+	}
+	
+	@Override
+	public Date asDate(String dateFormat) {
+		try {
+			return ColumnCast.string2Date(this, dateFormat);
+		} catch (Exception e) {
+			throw DataXException.asDataXException(CommonErrorCode.CONVERT_NOT_SUPPORT,
 					String.format("String[\"%s\"]不能转为Date .", this.asString()));
 		}
 	}

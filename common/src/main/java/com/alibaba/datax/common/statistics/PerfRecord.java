@@ -1,6 +1,5 @@
 package com.alibaba.datax.common.statistics;
 
-import com.alibaba.datax.common.log.EtlJobLogger;
 import com.alibaba.datax.common.util.HostUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
@@ -98,7 +97,6 @@ public class PerfRecord implements Comparable<PerfRecord> {
             //在PerfTrace里注册
             PerfTrace.getInstance().tracePerfRecord(perfRecord);
             perf.info(perfRecord.toString());
-            EtlJobLogger.log(perfRecord.toString());
         }
     }
 

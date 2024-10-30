@@ -1,6 +1,5 @@
 package com.alibaba.datax.common.statistics;
 
-import com.alibaba.datax.common.log.EtlJobLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +33,6 @@ public class VMInfo {
                         vmInfo = new VMInfo();
                     } catch (Exception e) {
                         LOG.warn("no need care, the fail is ignored : vmInfo init failed " + e.getMessage(), e);
-                        EtlJobLogger.log(e);
-
                     }
                 }
             }
@@ -80,14 +77,13 @@ public class VMInfo {
         garbageCollectorMXBeanList = java.lang.management.ManagementFactory.getGarbageCollectorMXBeans();
         memoryPoolMXBeanList = java.lang.management.ManagementFactory.getMemoryPoolMXBeans();
 
-        osInfo = runtimeMXBean.getVmVendor() + " " + runtimeMXBean.getSpecVersion() + " " + runtimeMXBean.getVmVersion();
-        jvmInfo = osMXBean.getName() + " " + osMXBean.getArch() + " " + osMXBean.getVersion();
+        jvmInfo = runtimeMXBean.getVmVendor() + " " + runtimeMXBean.getSpecVersion() + " " + runtimeMXBean.getVmVersion();
+        osInfo = osMXBean.getName() + " " + osMXBean.getArch() + " " + osMXBean.getVersion();
         totalProcessorCount = osMXBean.getAvailableProcessors();
 
         //构建startPhyOSStatus
         startPhyOSStatus = new PhyOSStatus();
         LOG.info("VMInfo# operatingSystem class => " + osMXBean.getClass().getName());
-        EtlJobLogger.log("VMInfo# operatingSystem class => " + osMXBean.getClass().getName());
         if (VMInfo.isSunOsMBean(osMXBean)) {
             {
                 startPhyOSStatus.totalPhysicalMemory = VMInfo.getLongFromOperatingSystem(osMXBean, "getTotalPhysicalMemorySize");
@@ -185,12 +181,10 @@ public class VMInfo {
 
             if (print) {
                 LOG.info(processCpuStatus.getDeltaString() + processMomoryStatus.getDeltaString() + processGCStatus.getDeltaString());
-                EtlJobLogger.log(processCpuStatus.getDeltaString() + processMomoryStatus.getDeltaString() + processGCStatus.getDeltaString());
             }
 
         } catch (Exception e) {
             LOG.warn("no need care, the fail is ignored : vmInfo getDelta failed " + e.getMessage(), e);
-            EtlJobLogger.log(e);
         }
     }
 
@@ -207,7 +201,6 @@ public class VMInfo {
             return (Long) method.invoke(operatingSystem, (Object[]) null);
         } catch (final Exception e) {
             LOG.info(String.format("OperatingSystemMXBean %s failed, Exception = %s ", methodName, e.getMessage()));
-            EtlJobLogger.log(String.format("OperatingSystemMXBean %s failed, Exception = %s ", methodName, e.getMessage()));
         }
 
         return -1;

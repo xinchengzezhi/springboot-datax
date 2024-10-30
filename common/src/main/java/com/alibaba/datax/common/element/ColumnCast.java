@@ -8,7 +8,10 @@ import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 
 public final class ColumnCast {
 
@@ -21,6 +24,11 @@ public final class ColumnCast {
 	public static Date string2Date(final StringColumn column)
 			throws ParseException {
 		return StringCast.asDate(column);
+	}
+	
+	public static Date string2Date(final StringColumn column, String dateFormat)
+			throws ParseException {
+		return StringCast.asDate(column, dateFormat);
 	}
 
 	public static byte[] string2Bytes(final StringColumn column)
@@ -112,6 +120,16 @@ class StringCast {
 			} catch (ParseException ignored){
 				e = ignored;
 			}
+		}
+		throw e;
+	}
+	
+	static Date asDate(final StringColumn column, String dateFormat) throws ParseException {
+		ParseException e;
+		try {
+			return FastDateFormat.getInstance(dateFormat, StringCast.timeZoner).parse(column.asString());
+		} catch (ParseException ignored) {
+			e = ignored;
 		}
 		throw e;
 	}

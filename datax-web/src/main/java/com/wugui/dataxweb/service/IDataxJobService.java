@@ -13,10 +13,13 @@ public interface IDataxJobService {
      * 根据json字符串用线程池启动一个datax作业
      *
      * @param jobJson
+     * @param jobConfigId
      * @author: huzekang
      * @Date: 2019-06-17
      */
-    String startJobByJsonStr(String jobJson);
+    String startJobByJsonStr(String jobJson, Long jobConfigId);
+
+    String startSyncJobByJsonStr(String jobJson, Long jobConfigId);
 
     String startJobLog(RunJobDto runJobDto);
 
