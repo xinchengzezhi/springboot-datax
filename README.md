@@ -27,7 +27,7 @@
 ## 前端项目
 [github地址](https://github.com/zhouhongfa/datax-vue-admin.git)
 ## how to run
-### 1. 在父工程目录下使用maven打包
+### 1. 在父工程目录下使用maven打包，直接跳过此步，已经将插件生成好，放在resource目录下了，直接启动项目即可
 ```
  mvn -U clean package assembly:assembly -Dmaven.test.skip=true 
 ```
@@ -56,3 +56,26 @@ http://localhost:8080/index.html#/datax/job
 
 ### 6. 在线查看作业日志
 ![](https://raw.githubusercontent.com/huzekang/picbed/master/20190708102445.png)
+### 7. postman 调用 示例curl
+```
+curl --location 'http://localhost:8066/api/testStartJobJson' \
+--header 'Accept: application/json, text/plain, */*' \
+--header 'Accept-Language: zh-CN,zh;q=0.9' \
+--header 'Connection: keep-alive' \
+--header 'Content-Type: application/json;charset=UTF-8' \
+--header 'Cookie: Admin-Token=admin-token' \
+--header 'Origin: http://localhost:8066' \
+--header 'Referer: http://localhost:8066/index.html' \
+--header 'Sec-Fetch-Dest: empty' \
+--header 'Sec-Fetch-Mode: cors' \
+--header 'Sec-Fetch-Site: same-origin' \
+--header 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36' \
+--header 'X-Token: admin-token' \
+--header 'sec-ch-ua: "Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"' \
+--header 'sec-ch-ua-mobile: ?0' \
+--header 'sec-ch-ua-platform: "macOS"' \
+--data-raw '{
+    "jobConfigId": 7,
+    "jobJson": "{\n  \"job\": {\n    \"setting\": {\n      \"speed\": {\n        \"channel\": 5\n      }\n    },\n    \"content\": [\n      {\n        \"reader\": {\n          \"name\": \"mysqlreader\",\n          \"parameter\": {\n            \"username\": \"app_owner\",\n            \"password\": \"YZ.zk.owner@2016\",\n            \"column\": [\n              \"name\",\n              \"tenant_id\",\n              \"code\"\n            ],\n            \"where\": \"(CAST(substring(code, 5, 19) AS UNSIGNED) ^((CAST(substring(code, 5, 19) AS UNSIGNED) >> 2))) & 2 = 0\",\n            \"connection\": [\n              {\n                \"table\": [\n                  \"test\"\n                ],\n                \"jdbcUrl\": [\n                  \"jdbc:mysql://olrating-rw-qa.yzw.cn:6302/jc_ppls\"\n                ]\n              }\n            ]\n          }\n        },\n        \"writer\": {\n          \"name\": \"mysqlwriter\",\n          \"parameter\": {\n            \"username\": \"app_owner\",\n            \"password\": \"YZ.zk.owner@2016\",\n            \"column\": [\n              \"name\",\n              \"tenant_id\",\n              \"code\"\n            ],\n            \"preSql\": [],\n            \"postSql\": [],\n            \"connection\": [\n              {\n                \"table\": [\n                  \"test_user_0\"\n                ],\n                \"jdbcUrl\": \"jdbc:mysql://olrating-rw-qa.yzw.cn:6302/jc_ppls\"\n              }\n            ]\n          }\n        }\n      },\n      {\n        \"reader\": {\n          \"name\": \"mysqlreader\",\n          \"parameter\": {\n            \"username\": \"app_owner\",\n            \"password\": \"YZ.zk.owner@2016\",\n            \"column\": [\n              \"name\",\n              \"tenant_id\",\n              \"code\"\n            ],\n            \"where\": \"(CAST(substring(code, 5, 19) AS UNSIGNED) ^((CAST(substring(code, 5, 19) AS UNSIGNED) >> 2))) & 2 = 1\",\n            \"connection\": [\n              {\n                \"table\": [\n                  \"test\"\n                ],\n                \"jdbcUrl\": [\n                  \"jdbc:mysql://olrating-rw-qa.yzw.cn:6302/jc_ppls\"\n                ]\n              }\n            ]\n          }\n        },\n        \"writer\": {\n          \"name\": \"mysqlwriter\",\n          \"parameter\": {\n            \"username\": \"app_owner\",\n            \"password\": \"YZ.zk.owner@2016\",\n            \"column\": [\n              \"name\",\n              \"tenant_id\",\n              \"code\"\n            ],\n            \"preSql\": [],\n            \"postSql\": [],\n            \"connection\": [\n              {\n                \"table\": [\n                  \"test_user_1\"\n                ],\n                \"jdbcUrl\": \"jdbc:mysql://olrating-rw-qa.yzw.cn:6302/jc_ppls\"\n              }\n            ]\n          }\n        }\n      }\n    ]\n  }\n}"
+}'
+```
